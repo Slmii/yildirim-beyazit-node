@@ -16,7 +16,13 @@ app.use('/member', memberRoutes);
 app.use('/contact', contactRoutes);
 app.use(errorHandler);
 
-// Server setup
-app.listen(PORT, () => {
-	console.log(`Example app is listening on port ${PORT}.`);
+app.use('/test', (_req, res) => {
+	res.status(200).json({ message: 'Success' });
 });
+
+// Server setup
+// app.listen(PORT, () => {
+// 	console.log(`Example app is listening on port ${PORT}.`);
+// });
+
+export default app;

@@ -12,6 +12,6 @@
 			"lib/*": ["./lib/*"]
 		}
 	},
-	"include": ["src"],
+	"include": ["./api/*.ts", "src"],
 	"exclude": ["node_modules"]
 }
