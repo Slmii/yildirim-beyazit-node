@@ -1,8 +1,8 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { validate } from 'lib/middlewares';
-import { memberSchema } from 'lib/schemas';
-import { email } from 'lib/services';
-import { Member } from 'lib/types';
+import { validate } from '../middlewares';
+import { memberSchema } from '../schemas';
+import { Member } from '../types';
+import { email } from '../services';
 
 const memberRoutes = express.Router();
 

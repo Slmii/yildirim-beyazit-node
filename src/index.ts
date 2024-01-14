@@ -1,12 +1,12 @@
 import express from 'express';
 import cors from 'cors';
-import { memberRoutes, contactRoutes } from 'lib/routes';
-import { errorHandler } from 'lib/middlewares';
 import dotenv from 'dotenv';
+import { contactRoutes, memberRoutes } from './lib/routes';
+import { errorHandler } from './lib/middlewares';
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 3002;
+// const PORT = process.env.PORT || 3002;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
