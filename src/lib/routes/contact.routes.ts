@@ -19,7 +19,7 @@ contactRoutes.post(
 				<p><b>Isim:</b> ${input.name}</p>
 				<p><b>E-posta:</b> ${input.email}</p>
 				<p><b>Telefon:</b> ${input.phone}</p>
-				<p><b>Mejas:</b> ${input.message}</p>
+				<p><b>Mesaj:</b> ${input.message}</p>
 			`
 		});
 
