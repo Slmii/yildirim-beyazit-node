@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { contactRoutes, memberRoutes } from './lib/routes';
+import { contactRoutes, memberRoutes, prayerTimeRoutes } from './lib/routes';
 import { errorHandler } from './lib/middlewares';
 
 dotenv.config();
@@ -14,6 +14,7 @@ app.use(cors());
 
 app.use('/member', memberRoutes);
 app.use('/contact', contactRoutes);
+app.use('/prayer-times', prayerTimeRoutes);
 app.use(errorHandler);
 
 app.use('/test', (_req, res) => {

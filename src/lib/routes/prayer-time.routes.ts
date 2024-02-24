@@ -1,12 +1,9 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { validate } from '../middlewares';
-import { memberSchema } from '../schemas';
 import { Member } from '../types';
-import { email } from '../services';
 
 const prayerTimeRoutes = express.Router();
 
-export interface PrayerTimeResponse {
+interface PrayerTimeResponse {
 	Aksam: string;
 	AyinSekliURL: string;
 	GreenwichOrtalamaZamani: string;
