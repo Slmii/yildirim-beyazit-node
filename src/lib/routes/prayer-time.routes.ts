@@ -88,6 +88,10 @@ prayerTimeRoutes.get('/current', async (_req: Request<any, any, Member>, res: Re
 	else if (currentTime > prayerTime.Aksam && currentTime < prayerTime.Yatsi) {
 		time = prayerTime.Yatsi;
 	}
+	// Is Imsak of tomorrow
+	else {
+		time = prayerTimeTomorrow.Imsak;
+	}
 
 	res.status(200).json({ time });
 });
