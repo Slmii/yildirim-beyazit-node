@@ -69,12 +69,7 @@ prayerTimeRoutes.get('/current', async (_req: Request<any, any, Member>, res: Re
 
 	console.log({ currentTime, prayerTime, prayerTimeTomorrow });
 
-	// Is Imsak next day
-	if (currentTime > prayerTime.Yatsi && currentTime < prayerTimeTomorrow.Imsak) {
-		time = prayerTimeTomorrow.Imsak;
-	}
-	// Is Gunes
-	else if (currentTime > prayerTime.Imsak && currentTime < prayerTime.Gunes) {
+	if (currentTime > prayerTime.Imsak && currentTime < prayerTime.Gunes) {
 		time = prayerTime.Gunes;
 	}
 	// Is Ogle
