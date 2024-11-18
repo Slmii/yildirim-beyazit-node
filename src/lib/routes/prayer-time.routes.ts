@@ -107,12 +107,12 @@ prayerTimeRoutes.get('/current', async (_req: Request<any, any, Member>, res: Re
 			{
 				text: time,
 				icon: '7943',
-				duration: 5
+				duration: 5000 // 5 seconds
 			},
 			{
 				text,
 				icon: '7943',
-				duration: 5
+				duration: 5000 // 5 seconds
 			}
 		]
 	});
