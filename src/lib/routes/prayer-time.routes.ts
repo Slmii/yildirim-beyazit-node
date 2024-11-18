@@ -63,11 +63,11 @@ prayerTimeRoutes.get('/current', async (_req: Request<any, any, Member>, res: Re
 	const prayerTime = data[prayerTimeIndex];
 	const prayerTimeTomorrow = data[prayerTimeIndex + 1];
 
-	console.log({ prayerTime, prayerTimeTomorrow });
-
 	let time = '';
 	// Get current timestamp in HH:MM format
 	const currentTime = `${now.getHours()}:${now.getMinutes()}`;
+
+	console.log({ currentTime, prayerTime, prayerTimeTomorrow });
 
 	// Is Imsak next day
 	if (currentTime > prayerTime.Yatsi && currentTime < prayerTimeTomorrow.Imsak) {
