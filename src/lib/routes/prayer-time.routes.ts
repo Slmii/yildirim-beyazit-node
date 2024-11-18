@@ -101,7 +101,21 @@ prayerTimeRoutes.get('/current', async (_req: Request<any, any, Member>, res: Re
 		text = 'İmsak';
 	}
 
-	res.status(200).json({ time, text: `${time} - ${text}` });
+	// res.status(200).json({ time, text: `${time} - ${text}` });
+	res.status(200).json({
+		frames: [
+			{
+				text: time,
+				icon: '7943',
+				duration: 5
+			},
+			{
+				text,
+				icon: '7943',
+				duration: 5
+			}
+		]
+	});
 });
 
 export { prayerTimeRoutes };
