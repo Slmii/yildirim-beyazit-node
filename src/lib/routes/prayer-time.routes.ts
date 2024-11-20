@@ -51,6 +51,8 @@ prayerTimeRoutes.get('/today', async (_req: Request<any, any, Member>, res: Resp
 prayerTimeRoutes.get('/current', async (_req: Request<any, any, Member>, res: Response, _next: NextFunction) => {
 	const now = DateTime.now().setZone('Europe/Amsterdam');
 
+	console.log('Cache Expiry', cacheExpiry?.toISO());
+
 	// Check if the cache is still valid
 	if (prayerTimeCache && cacheExpiry && now < cacheExpiry) {
 		console.log('Serving from cache');
@@ -63,6 +65,7 @@ prayerTimeRoutes.get('/current', async (_req: Request<any, any, Member>, res: Re
 
 			// Set cache expiry to midnight
 			cacheExpiry = now.plus({ days: 1 }).startOf('day');
+			console.log('New Cache Expiry', cacheExpiry.toISO());
 		} catch (error) {
 			console.error('Failed to fetch prayer times:', error);
 			return res.status(500).json({ error: 'Failed to fetch prayer times' });
@@ -87,8 +90,6 @@ prayerTimeRoutes.get('/current', async (_req: Request<any, any, Member>, res: Re
 
 	// Get current timestamp in HH:MM format
 	const currentTime = now.toFormat('HH:mm');
-
-	console.log({ now, currentTime, prayerTime, prayerTimeTomorrow });
 
 	// Is Imsak
 	if (currentTime >= prayerTime.Imsak && currentTime < prayerTime.Gunes) {
