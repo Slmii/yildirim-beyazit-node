@@ -26,6 +26,9 @@ interface PrayerTimeResponse {
 	Yatsi: string;
 }
 
+let prayerTimeCache: PrayerTimeResponse[] | null = null;
+let cacheExpiry: DateTime | null = null;
+
 prayerTimeRoutes.get('/today', async (_req: Request<any, any, Member>, res: Response, _next: NextFunction) => {
 	const response = await fetch('https://ezanvakti.emushaf.net/vakitler/13880');
 	const data = (await response.json()) as PrayerTimeResponse[];
@@ -46,10 +49,27 @@ prayerTimeRoutes.get('/today', async (_req: Request<any, any, Member>, res: Resp
 });
 
 prayerTimeRoutes.get('/current', async (_req: Request<any, any, Member>, res: Response, _next: NextFunction) => {
-	const response = await fetch('https://ezanvakti.emushaf.net/vakitler/13880');
-	const data = (await response.json()) as PrayerTimeResponse[];
-
 	const now = DateTime.now().setZone('Europe/Amsterdam');
+
+	// Check if the cache is still valid
+	if (prayerTimeCache && cacheExpiry && now < cacheExpiry) {
+		console.log('Serving from cache');
+	} else {
+		console.log('Fetching new data and updating cache');
+
+		try {
+			const response = await fetch('https://ezanvakti.emushaf.net/vakitler/13880');
+			prayerTimeCache = (await response.json()) as PrayerTimeResponse[];
+
+			// Set cache expiry to midnight
+			cacheExpiry = now.plus({ days: 1 }).startOf('day');
+		} catch (error) {
+			console.error('Failed to fetch prayer times:', error);
+			return res.status(500).json({ error: 'Failed to fetch prayer times' });
+		}
+	}
+
+	const data = prayerTimeCache;
 
 	const prayerTimeIndex = data?.findIndex(prayerTime => {
 		const prayerDate = DateTime.fromISO(prayerTime.MiladiTarihUzunIso8601, { zone: 'Europe/Amsterdam' }).startOf(
