@@ -27,7 +27,7 @@ interface PrayerTimeResponse {
 }
 
 prayerTimeRoutes.get('/today', async (_req: Request<any, any, Member>, res: Response, _next: NextFunction) => {
-	const response = await fetch('https://ezanvakti.herokuapp.com/vakitler/13880');
+	const response = await fetch('https://ezanvakti.emushaf.net/vakitler/13880');
 	const data = (await response.json()) as PrayerTimeResponse[];
 
 	const now = new Date();
@@ -46,7 +46,7 @@ prayerTimeRoutes.get('/today', async (_req: Request<any, any, Member>, res: Resp
 });
 
 prayerTimeRoutes.get('/current', async (_req: Request<any, any, Member>, res: Response, _next: NextFunction) => {
-	const response = await fetch('https://ezanvakti.herokuapp.com/vakitler/13880');
+	const response = await fetch('https://ezanvakti.emushaf.net/vakitler/13880');
 	const data = (await response.json()) as PrayerTimeResponse[];
 
 	const now = DateTime.now().setZone('Europe/Amsterdam');
