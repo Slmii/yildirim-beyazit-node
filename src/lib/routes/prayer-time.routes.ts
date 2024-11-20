@@ -70,7 +70,7 @@ prayerTimeRoutes.get('/current', async (_req: Request<any, any, Member>, res: Re
 	// Get current timestamp in HH:MM format
 	const currentTime = `${now.getHours()}:${now.getMinutes()}`;
 
-	console.log({ currentTime, prayerTime, prayerTimeTomorrow });
+	console.log({ now, currentTime, prayerTime, prayerTimeTomorrow });
 
 	// Is Imsak
 	if (currentTime >= prayerTime.Imsak && currentTime < prayerTime.Gunes) {
