@@ -49,16 +49,14 @@ prayerTimeRoutes.get('/current', async (_req: Request<any, any, Member>, res: Re
 	const response = await fetch('https://ezanvakti.herokuapp.com/vakitler/13880');
 	const data = (await response.json()) as PrayerTimeResponse[];
 
-	const now = DateTime.now().setZone('Europe/Amsterdam').toJSDate();
+	const now = DateTime.now().setZone('Europe/Amsterdam');
 
 	const prayerTimeIndex = data?.findIndex(prayerTime => {
-		const prayerDate = new Date(prayerTime.MiladiTarihUzunIso8601.split('T')[0]);
-
-		return (
-			prayerDate.getDate() === now.getDate() &&
-			prayerDate.getMonth() === now.getMonth() &&
-			prayerDate.getFullYear() === now.getFullYear()
+		const prayerDate = DateTime.fromISO(prayerTime.MiladiTarihUzunIso8601, { zone: 'Europe/Amsterdam' }).startOf(
+			'day'
 		);
+
+		return prayerDate.day === now.day && prayerDate.month === now.month && prayerDate.year === now.year;
 	});
 
 	const prayerTime = data[prayerTimeIndex];
@@ -68,7 +66,7 @@ prayerTimeRoutes.get('/current', async (_req: Request<any, any, Member>, res: Re
 	let text = '';
 
 	// Get current timestamp in HH:MM format
-	const currentTime = `${now.getHours()}:${now.getMinutes()}`;
+	const currentTime = now.toFormat('HH:mm');
 
 	console.log({ now, currentTime, prayerTime, prayerTimeTomorrow });
 
