@@ -1,4 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
+import { DateTime } from 'luxon';
 import { Member } from '../types';
 
 const prayerTimeRoutes = express.Router();
@@ -48,7 +49,7 @@ prayerTimeRoutes.get('/current', async (_req: Request<any, any, Member>, res: Re
 	const response = await fetch('https://ezanvakti.herokuapp.com/vakitler/13880');
 	const data = (await response.json()) as PrayerTimeResponse[];
 
-	const now = new Date();
+	const now = DateTime.now().setZone('Europe/Amsterdam').toJSDate();
 
 	const prayerTimeIndex = data?.findIndex(prayerTime => {
 		const prayerDate = new Date(prayerTime.MiladiTarihUzunIso8601.split('T')[0]);
