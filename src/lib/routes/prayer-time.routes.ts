@@ -71,34 +71,38 @@ prayerTimeRoutes.get('/current', async (_req: Request<any, any, Member>, res: Re
 
 	console.log({ currentTime, prayerTime, prayerTimeTomorrow });
 
-	if (currentTime > prayerTime.Imsak && currentTime < prayerTime.Gunes) {
+	// Is Imsak
+	if (currentTime >= prayerTime.Imsak && currentTime < prayerTime.Gunes) {
 		time = prayerTime.Gunes;
 		text = 'Güneş';
 	}
 	// Is Ogle
-	else if (currentTime > prayerTime.Gunes && currentTime < prayerTime.Ogle) {
+	else if (currentTime >= prayerTime.Gunes && currentTime < prayerTime.Ogle) {
 		time = prayerTime.Ogle;
 		text = 'Öğle';
 	}
 	// Is Ikindi
-	else if (currentTime > prayerTime.Ogle && currentTime < prayerTime.Ikindi) {
+	else if (currentTime >= prayerTime.Ogle && currentTime < prayerTime.Ikindi) {
 		time = prayerTime.Ikindi;
 		text = 'İkindi';
 	}
 	// Is Aksam
-	else if (currentTime > prayerTime.Ikindi && currentTime < prayerTime.Aksam) {
+	else if (currentTime >= prayerTime.Ikindi && currentTime < prayerTime.Aksam) {
 		time = prayerTime.Aksam;
 		text = 'Akşam';
 	}
 	// Is Yatsi
-	else if (currentTime > prayerTime.Aksam && currentTime < prayerTime.Yatsi) {
+	else if (currentTime >= prayerTime.Aksam && currentTime < prayerTime.Yatsi) {
 		time = prayerTime.Yatsi;
 		text = 'Yatsı';
 	}
 	// Is Imsak of tomorrow
-	else {
+	else if (currentTime >= prayerTime.Yatsi || currentTime < prayerTimeTomorrow.Imsak) {
+		// Handles times after Yatsi today and before Imsak tomorrow
 		time = prayerTimeTomorrow.Imsak;
 		text = 'İmsak';
+	} else {
+		console.error('Unexpected time range. Check input data.');
 	}
 
 	// res.status(200).json({ time, text: `${time} - ${text}` });
