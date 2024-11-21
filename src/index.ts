@@ -6,7 +6,7 @@ import { errorHandler } from './lib/middlewares';
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 3002;
+// const PORT = process.env.PORT || 3002;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -22,8 +22,8 @@ app.use('/test', (_req, res) => {
 });
 
 // Server setup
-app.listen(PORT, () => {
-	console.log(`Example app is listening on port ${PORT}.`);
-});
+// app.listen(PORT, () => {
+// 	console.log(`Example app is listening on port ${PORT}.`);
+// });
 
 export default app;
