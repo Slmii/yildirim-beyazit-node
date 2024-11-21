@@ -99,7 +99,7 @@ prayerTimeRoutes.get('/time-till-next-prayer', async (_req: Request, res: Respon
 		})
 		.plus({ days: addDays });
 
-	const timeTillNextPrayer = nextPrayerDateTime.diff(now, ['hours', 'minutes', 'seconds']).toFormat('mm');
+	const timeTillNextPrayer = nextPrayerDateTime.diff(now, ['hours', 'minutes', 'seconds']).toFormat('ss');
 	res.status(200).json({ nextPrayer: nextPrayerName, timeTillNextPrayer: Number(timeTillNextPrayer) });
 });
 
