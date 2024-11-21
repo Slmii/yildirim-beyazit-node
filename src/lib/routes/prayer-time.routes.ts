@@ -49,101 +49,78 @@ prayerTimeRoutes.get('/today', async (_req: Request, res: Response, _next: NextF
 });
 
 prayerTimeRoutes.get('/time-till-next-prayer', async (_req: Request, res: Response, _next: NextFunction) => {
-	const response = await fetch('https://ezanvakti.emushaf.net/vakitler/13880');
-	const data = (await response.json()) as PrayerTimeResponse[];
-
+	const data = await getCachedPrayerTimes();
 	const now = DateTime.now().setZone('Europe/Amsterdam');
 
-	const prayerTimeIndex = data?.findIndex(prayerTime => {
-		const prayerDate = DateTime.fromISO(prayerTime.MiladiTarihUzunIso8601, {
-			zone: 'Europe/Amsterdam'
-		}).startOf('day');
+	const prayerTimeIndex = data.findIndex(prayerTime => {
+		const prayerDate = prayerTime.MiladiTarihUzunIso8601.split('T')[0];
+		const currentDate = now.toISODate();
 
-		return prayerDate.day === now.day && prayerDate.month === now.month && prayerDate.year === now.year;
+		return prayerDate === currentDate;
 	});
+
 	const prayerTime = data[prayerTimeIndex];
 	const prayerTimeTomorrow = data[prayerTimeIndex + 1];
 
-	let time = '';
-
 	// Get current timestamp in HH:MM format
 	const currentTime = now.toFormat('HH:mm');
+	let nextPrayerTime = '';
+	let nextPrayerName = '';
+	let addDays = 0;
 
-	// Is Imsak
 	if (currentTime >= prayerTime.Imsak && currentTime < prayerTime.Gunes) {
-		time = prayerTime.Gunes;
-	}
-	// Is Ogle
-	else if (currentTime >= prayerTime.Gunes && currentTime < prayerTime.Ogle) {
-		time = prayerTime.Ogle;
-	}
-	// Is Ikindi
-	else if (currentTime >= prayerTime.Ogle && currentTime < prayerTime.Ikindi) {
-		time = prayerTime.Ikindi;
-	}
-	// Is Aksam
-	else if (currentTime >= prayerTime.Ikindi && currentTime < prayerTime.Aksam) {
-		time = prayerTime.Aksam;
-	}
-	// Is Yatsi
-	else if (currentTime >= prayerTime.Aksam && currentTime < prayerTime.Yatsi) {
-		time = prayerTime.Yatsi;
-	}
-	// Is Imsak of tomorrow
-	else if (currentTime >= prayerTime.Yatsi || currentTime < prayerTimeTomorrow.Imsak) {
-		// Handles times after Yatsi today and before Imsak tomorrow
-		time = prayerTimeTomorrow.Imsak;
+		nextPrayerTime = prayerTime.Gunes;
+		nextPrayerName = 'Güneş';
+	} else if (currentTime >= prayerTime.Gunes && currentTime < prayerTime.Ogle) {
+		nextPrayerTime = prayerTime.Ogle;
+		nextPrayerName = 'Öğle';
+	} else if (currentTime >= prayerTime.Ogle && currentTime < prayerTime.Ikindi) {
+		nextPrayerTime = prayerTime.Ikindi;
+		nextPrayerName = 'Ikindi';
+	} else if (currentTime >= prayerTime.Ikindi && currentTime < prayerTime.Aksam) {
+		nextPrayerTime = prayerTime.Aksam;
+		nextPrayerName = 'Akşam';
+	} else if (currentTime >= prayerTime.Aksam && currentTime < prayerTime.Yatsi) {
+		nextPrayerTime = prayerTimeTomorrow.Yatsi;
+		nextPrayerName = 'Yatsı';
+	} else if (currentTime >= prayerTime.Yatsi || currentTime < prayerTimeTomorrow.Imsak) {
+		nextPrayerTime = prayerTimeTomorrow.Imsak;
+		nextPrayerName = 'Imsak';
+		addDays += 1;
 	} else {
 		console.error('Unexpected time range. Check input data.');
 	}
 
-	const timeTillNextPrayer = DateTime.fromISO(time, { zone: 'Europe/Amsterdam' }).diff(now, 'minutes').toObject();
+	let nextPrayerDateTime = DateTime.fromFormat(nextPrayerTime, 'HH:mm', { zone: 'Europe/Amsterdam' })
+		.set({
+			year: now.year,
+			month: now.month,
+			day: now.day
+		})
+		.plus({ days: addDays });
 
-	res.status(200).json({ timeTillNextPrayer });
+	const timeTillNextPrayer = nextPrayerDateTime.diff(now, ['hours', 'minutes', 'seconds']).toFormat('hh:mm:ss');
+	res.status(200).json({ nextPrayer: nextPrayerName, timeTillNextPrayer });
 });
 
 prayerTimeRoutes.get('/current', async (_req: Request, res: Response, _next: NextFunction) => {
+	const data = await getCachedPrayerTimes();
 	const now = DateTime.now().setZone('Europe/Amsterdam');
 
-	console.log('Cache Expiry', cacheExpiry?.toISO());
+	const prayerTimeIndex = data.findIndex(prayerTime => {
+		const prayerDate = prayerTime.MiladiTarihUzunIso8601.split('T')[0];
+		const currentDate = now.toISODate();
 
-	// Check if the cache is still valid
-	if (prayerTimeCache && cacheExpiry && now < cacheExpiry) {
-		console.log('Serving from cache');
-	} else {
-		console.log('Fetching new data and updating cache');
-
-		try {
-			const response = await fetch('https://ezanvakti.emushaf.net/vakitler/13880');
-			prayerTimeCache = (await response.json()) as PrayerTimeResponse[];
-
-			// Set cache expiry to midnight
-			cacheExpiry = now.plus({ days: 1 }).startOf('day');
-			console.log('New Cache Expiry', cacheExpiry.toISO());
-		} catch (error) {
-			console.error('Failed to fetch prayer times:', error);
-			return res.status(500).json({ error: 'Failed to fetch prayer times' });
-		}
-	}
-
-	const data = prayerTimeCache;
-
-	const prayerTimeIndex = data?.findIndex(prayerTime => {
-		const prayerDate = DateTime.fromISO(prayerTime.MiladiTarihUzunIso8601, { zone: 'Europe/Amsterdam' }).startOf(
-			'day'
-		);
-
-		return prayerDate.day === now.day && prayerDate.month === now.month && prayerDate.year === now.year;
+		return prayerDate === currentDate;
 	});
 
 	const prayerTime = data[prayerTimeIndex];
 	const prayerTimeTomorrow = data[prayerTimeIndex + 1];
 
-	let time = '';
-	let text = '';
-
 	// Get current timestamp in HH:MM format
 	const currentTime = now.toFormat('HH:mm');
+	let time = '';
+	let text = '';
 
 	// Is Imsak
 	if (currentTime >= prayerTime.Imsak && currentTime < prayerTime.Gunes) {
@@ -179,7 +156,6 @@ prayerTimeRoutes.get('/current', async (_req: Request, res: Response, _next: Nex
 		console.error('Unexpected time range. Check input data.');
 	}
 
-	// res.status(200).json({ time, text: `${time} - ${text}` });
 	res.status(200).json({
 		frames: [
 			{
@@ -197,3 +173,25 @@ prayerTimeRoutes.get('/current', async (_req: Request, res: Response, _next: Nex
 });
 
 export { prayerTimeRoutes };
+
+const getCachedPrayerTimes = async () => {
+	const now = DateTime.now().setZone('Europe/Amsterdam');
+
+	console.log('Cache Expiry', cacheExpiry?.toISO());
+
+	// Check if the cache is still valid
+	if (prayerTimeCache && cacheExpiry && now < cacheExpiry) {
+		console.log('Serving from cache');
+	} else {
+		console.log('Fetching new data and updating cache');
+
+		const response = await fetch('https://ezanvakti.emushaf.net/vakitler/13880');
+		prayerTimeCache = (await response.json()) as PrayerTimeResponse[];
+
+		// Set cache expiry to midnight
+		cacheExpiry = now.plus({ days: 1 }).startOf('day');
+		console.log('New Cache Expiry', cacheExpiry.toISO());
+	}
+
+	return prayerTimeCache;
+};
