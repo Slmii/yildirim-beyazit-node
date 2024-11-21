@@ -29,7 +29,7 @@ interface PrayerTimeResponse {
 let prayerTimeCache: PrayerTimeResponse[] | null = null;
 let cacheExpiry: DateTime | null = null;
 
-prayerTimeRoutes.get('/today', async (_req: Request<any, any, Member>, res: Response, _next: NextFunction) => {
+prayerTimeRoutes.get('/today', async (_req: Request, res: Response, _next: NextFunction) => {
 	const response = await fetch('https://ezanvakti.emushaf.net/vakitler/13880');
 	const data = (await response.json()) as PrayerTimeResponse[];
 
@@ -48,7 +48,61 @@ prayerTimeRoutes.get('/today', async (_req: Request<any, any, Member>, res: Resp
 	res.status(200).json({ prayerTime });
 });
 
-prayerTimeRoutes.get('/current', async (_req: Request<any, any, Member>, res: Response, _next: NextFunction) => {
+prayerTimeRoutes.get('/time-till-next-prayer', async (_req: Request, res: Response, _next: NextFunction) => {
+	const response = await fetch('https://ezanvakti.emushaf.net/vakitler/13880');
+	const data = (await response.json()) as PrayerTimeResponse[];
+
+	const now = DateTime.now().setZone('Europe/Amsterdam');
+
+	const prayerTimeIndex = data?.findIndex(prayerTime => {
+		const prayerDate = DateTime.fromISO(prayerTime.MiladiTarihUzunIso8601, {
+			zone: 'Europe/Amsterdam'
+		}).startOf('day');
+
+		return prayerDate.day === now.day && prayerDate.month === now.month && prayerDate.year === now.year;
+	});
+	const prayerTime = data[prayerTimeIndex];
+	const prayerTimeTomorrow = data[prayerTimeIndex + 1];
+
+	let time = '';
+
+	// Get current timestamp in HH:MM format
+	const currentTime = now.toFormat('HH:mm');
+
+	// Is Imsak
+	if (currentTime >= prayerTime.Imsak && currentTime < prayerTime.Gunes) {
+		time = prayerTime.Gunes;
+	}
+	// Is Ogle
+	else if (currentTime >= prayerTime.Gunes && currentTime < prayerTime.Ogle) {
+		time = prayerTime.Ogle;
+	}
+	// Is Ikindi
+	else if (currentTime >= prayerTime.Ogle && currentTime < prayerTime.Ikindi) {
+		time = prayerTime.Ikindi;
+	}
+	// Is Aksam
+	else if (currentTime >= prayerTime.Ikindi && currentTime < prayerTime.Aksam) {
+		time = prayerTime.Aksam;
+	}
+	// Is Yatsi
+	else if (currentTime >= prayerTime.Aksam && currentTime < prayerTime.Yatsi) {
+		time = prayerTime.Yatsi;
+	}
+	// Is Imsak of tomorrow
+	else if (currentTime >= prayerTime.Yatsi || currentTime < prayerTimeTomorrow.Imsak) {
+		// Handles times after Yatsi today and before Imsak tomorrow
+		time = prayerTimeTomorrow.Imsak;
+	} else {
+		console.error('Unexpected time range. Check input data.');
+	}
+
+	const timeTillNextPrayer = DateTime.fromISO(time, { zone: 'Europe/Amsterdam' }).diff(now, 'minutes').toObject();
+
+	res.status(200).json({ timeTillNextPrayer });
+});
+
+prayerTimeRoutes.get('/current', async (_req: Request, res: Response, _next: NextFunction) => {
 	const now = DateTime.now().setZone('Europe/Amsterdam');
 
 	console.log('Cache Expiry', cacheExpiry?.toISO());
