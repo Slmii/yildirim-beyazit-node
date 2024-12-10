@@ -1,12 +1,13 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { contactRoutes, memberRoutes, prayerTimeRoutes } from './lib/routes';
-import { errorHandler } from './lib/middlewares';
+import { memberRoutes } from '@/lib/routes/member.routes';
+import { prayerTimeRoutes } from '@/lib/routes/prayer-time.routes';
+import { contactRoutes } from '@/lib/routes/contact.routes';
+import { errorHandler } from '@/lib/middlewares/error.middleware';
 
 dotenv.config();
 const app = express();
-// const PORT = process.env.PORT || 3002;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -20,10 +21,5 @@ app.use(errorHandler);
 app.use('/test', (_req, res) => {
 	res.status(200).json({ message: 'Success' });
 });
-
-// Server setup
-// app.listen(PORT, () => {
-// 	console.log(`Example app is listening on port ${PORT}.`);
-// });
 
 export default app;

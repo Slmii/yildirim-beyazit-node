@@ -1,5 +1,4 @@
-import { object, string, InferType, number } from 'yup';
-import IBAN from 'iban';
+import { object, string, InferType } from 'yup';
 
 export const contactSchema = object({
 	body: object({

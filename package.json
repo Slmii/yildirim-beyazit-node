@@ -1,11 +1,11 @@
 {
-	"name": "circuitz-node",
+	"name": "admin-yildirim-beyazit",
 	"version": "1.0.0",
 	"description": "",
 	"main": "dist/index.js",
 	"scripts": {
-		"dev": "nodemon -e ts,js --exec ts-node -r tsconfig-paths/register ./src/index.ts",
-		"build": "rm -rf dist && tsc && tsc-alias",
+		"dev": "nodemon -r tsconfig-paths/register src/index.ts",
+		"build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
 		"start": "node dist/index.js",
 		"format": "prettier --write \"src/**/*.{json,js,jsx,ts,tsx,css,scss}\" --ignore-path .prettierignore",
 		"lint": "eslint ./src --max-warnings=0",

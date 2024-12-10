@@ -1,6 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { DateTime } from 'luxon';
-import { Member } from '../types';
 
 const prayerTimeRoutes = express.Router();
 

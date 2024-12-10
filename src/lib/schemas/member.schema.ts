@@ -1,5 +1,4 @@
 import { object, string, InferType, number } from 'yup';
-import IBAN from 'iban';
 
 export const memberSchema = object({
 	body: object({
