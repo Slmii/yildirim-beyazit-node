@@ -1,8 +1,8 @@
-import { validate } from '@/lib/middlewares/validate.middleware';
-import { contactSchema } from '@/lib/schemas/contact.schema';
-import { email } from '@/lib/services/email.service';
-import { Contact } from '@/lib/types/Contact.types';
 import express, { NextFunction, Request, Response } from 'express';
+import { validate } from '../middlewares';
+import { contactSchema } from '../schemas';
+import { Contact } from '../types';
+import { email } from '../services';
 
 const contactRoutes = express.Router();
 

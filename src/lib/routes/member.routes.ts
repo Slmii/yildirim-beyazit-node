@@ -1,8 +1,8 @@
-import { validate } from '@/lib/middlewares/validate.middleware';
-import { memberSchema } from '@/lib/schemas/member.schema';
-import { email } from '@/lib/services/email.service';
-import { Member } from '@/lib/types/Member.types';
 import express, { NextFunction, Request, Response } from 'express';
+import { validate } from '../middlewares';
+import { memberSchema } from '../schemas';
+import { Member } from '../types';
+import { email } from '../services';
 
 const memberRoutes = express.Router();
 

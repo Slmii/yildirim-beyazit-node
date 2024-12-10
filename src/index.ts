@@ -1,10 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { memberRoutes } from '@/lib/routes/member.routes';
-import { contactRoutes } from '@/lib/routes/contact.routes';
-import { prayerTimeRoutes } from '@/lib/routes/prayer-time.routes';
-import { errorHandler } from '@/lib/middlewares/error.middleware';
+import { contactRoutes, memberRoutes, prayerTimeRoutes } from './lib/routes';
+import { errorHandler } from './lib/middlewares';
 
 dotenv.config();
 const app = express();
