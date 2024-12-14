@@ -1,21 +1,20 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
-import { AnyObjectSchema, ValidationError } from 'yup';
+import z, { ZodError } from 'zod';
 
-export const validate =
-	(schema: AnyObjectSchema): RequestHandler =>
+export const validateSchema =
+	(schema: z.ZodObject<any, any>): RequestHandler =>
 	async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			await schema.validate({
-				body: req.body,
-				query: req.query,
-				params: req.params
-			});
-
+			schema.parse(req.body);
 			return next();
 		} catch (error) {
-			const err = error as ValidationError;
-			console.log('Validation Error', err);
-
-			return res.status(400).json({ type: err.name, message: err.message, errors: err.errors });
+			if (error instanceof ZodError) {
+				const errorMessages = error.errors.map((issue: any) => ({
+					message: `${issue.path.join('.')} is ${issue.message}`
+				}));
+				res.status(400).json({ message: 'Invalid data', error: errorMessages });
+			} else {
+				res.status(500).json({ message: 'Internal Server Error' });
+			}
 		}
 	};

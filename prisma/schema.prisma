@@ -1,0 +1,96 @@
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model Member {
+    id        Int      @id @default(autoincrement())
+    email     String   @db.VarChar(255)
+    name      String   @db.VarChar(255)
+    address   String   @db.VarChar(255)
+    zip       String   @db.VarChar(255)
+    city      String   @db.VarChar(255)
+    phone     String   @db.VarChar(255)
+    bank      String   @db.VarChar(255)
+    amount    Decimal  @db.Decimal(10, 2)
+    createdAt DateTime @default(now()) @db.Timestamptz
+    updatedAt DateTime @updatedAt @db.Timestamptz
+
+    payments Payment[]
+
+    @@index([email, name, address, zip, city, phone, bank])
+}
+
+model Payment {
+    id        Int      @id @default(autoincrement())
+    memberId  Int      @db.Integer()
+    amount    Decimal  @db.Decimal(10, 2)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    Member Member @relation(fields: [memberId], references: [id])
+
+    @@index([memberId])
+}
+
+model Category {
+    id        Int          @id @default(autoincrement())
+    name      String       @db.VarChar(255)
+    type      CategoryType
+    total     Decimal      @db.Decimal(10, 2)
+    order     Int          @default(0)
+    createdAt DateTime     @default(now())
+    updatedAt DateTime     @updatedAt
+
+    transactions Transaction[]
+
+    @@index([name])
+}
+
+model Transaction {
+    id          Int      @id @default(autoincrement())
+    categoryId  Int      @db.Integer()
+    name        String   @db.VarChar(255)
+    amount      Decimal  @db.Decimal(10, 2)
+    invoiceDate DateTime @db.Timestamptz
+    invoiceNr   String?  @db.VarChar(255)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    category Category @relation(fields: [categoryId], references: [id])
+
+    @@index([categoryId, name, invoiceNr])
+}
+
+model Ayah {
+    id        Int      @id @default(autoincrement())
+    surah     Int      @db.Integer()
+    ayah      Int      @db.Integer()
+    language  String   @db.VarChar(255)
+    order     Int      @default(0)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Announcement {
+    id        Int                  @id @default(autoincrement())
+    content   String               @db.Text
+    language  AnnouncementLanguage @default(NL)
+    createdAt DateTime             @default(now())
+    updatedAt DateTime             @updatedAt
+}
+
+enum CategoryType {
+    INCOME
+    EXPENSE
+}
+
+enum AnnouncementLanguage {
+    NL
+    TR
+    AR
+}
