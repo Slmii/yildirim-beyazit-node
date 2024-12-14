@@ -1,8 +1,8 @@
-import { withAuth } from '@/lib/middlewares/auth.middleware';
-import prisma from '@/lib/prisma';
+import { withAuth } from 'src/lib/middlewares/auth.middleware';
+import prisma from 'src/lib/prisma';
 import express, { Request, Response } from 'express';
 import { CategoryType, Prisma } from '@prisma/client';
-import { AddAccountingCategory, EditAccountingCategory } from '@/lib/types/Accounting.types';
+import { AddAccountingCategory, EditAccountingCategory } from 'src/lib/types/Accounting.types';
 
 const accountingRoutes = express.Router();
 

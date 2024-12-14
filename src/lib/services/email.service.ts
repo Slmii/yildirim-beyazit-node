@@ -1,4 +1,4 @@
-import { env } from '@/lib/env';
+import { env } from 'src/lib/env';
 import nodemailer from 'nodemailer';
 
 export const email = ({ html, subject }: { subject: string; html: string }) => {

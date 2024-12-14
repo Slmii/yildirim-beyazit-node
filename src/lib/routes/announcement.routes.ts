@@ -1,7 +1,7 @@
-import { withAuth } from '@/lib/middlewares/auth.middleware';
-import prisma from '@/lib/prisma';
-import { PostAnnouncement } from '@/lib/types/Announcement.types';
-import { Language } from '@/lib/types/Ayah.types';
+import { withAuth } from 'src/lib/middlewares/auth.middleware';
+import prisma from 'src/lib/prisma';
+import { PostAnnouncement } from 'src/lib/types/Announcement.types';
+import { Language } from 'src/lib/types/Ayah.types';
 import express, { Request, Response } from 'express';
 
 const announcementRoutes = express.Router();

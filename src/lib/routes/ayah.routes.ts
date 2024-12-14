@@ -1,6 +1,6 @@
-import { withAuth } from '@/lib/middlewares/auth.middleware';
-import prisma from '@/lib/prisma';
-import { Language, AddAyah } from '@/lib/types/Ayah.types';
+import { withAuth } from 'src/lib/middlewares/auth.middleware';
+import prisma from 'src/lib/prisma';
+import { Language, AddAyah } from 'src/lib/types/Ayah.types';
 import express, { Request, Response } from 'express';
 
 const ayahRoutes = express.Router();
