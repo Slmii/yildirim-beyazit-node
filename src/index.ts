@@ -7,7 +7,7 @@ import { prayerTimeRoutes } from '@/lib/routes/prayer-time.routes';
 import { errorHandler } from '@/lib/middlewares/error.middleware';
 import { ayahRoutes } from '@/lib/routes/ayah.routes';
 import { clerkMiddleware } from '@clerk/express';
-import { env } from '@/lib/env';
+// import { env } from '@/lib/env';
 import { logger } from '@/lib/middlewares/logger.middleware';
 import { announcementRoutes } from '@/lib/routes/announcement.routes';
 import { accountingRoutes } from '@/lib/routes/accounting.routes';
@@ -36,6 +36,8 @@ app.use('/test', (_req, res) => {
 	res.status(200).json({ message: 'Success' });
 });
 
-app.listen(env.PORT, () => {
-	console.log(`Server is running on http://localhost:${env.PORT}`);
-});
+// app.listen(env.PORT, () => {
+// 	console.log(`Server is running on http://localhost:${env.PORT}`);
+// });
+
+export default app;
