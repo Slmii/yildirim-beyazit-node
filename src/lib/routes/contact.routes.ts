@@ -1,7 +1,7 @@
-import { validateSchema } from 'src/lib/middlewares/validate.middleware';
-import { contactSchema } from 'src/lib/schemas/contact.schema';
-import { email } from 'src/lib/services/email.service';
-import { Contact } from 'src/lib/types/Contact.types';
+import { validateSchema } from '@/lib/middlewares/validate.middleware';
+import { contactSchema } from '@/lib/schemas/contact.schema';
+import { email } from '@/lib/services/email.service';
+import { Contact } from '@/lib/types/Contact.types';
 import express, { NextFunction, Request, Response } from 'express';
 
 const contactRoutes = express.Router();

@@ -8,10 +8,10 @@
 		"forceConsistentCasingInFileNames": true,
 		"resolveJsonModule": true,
 		"outDir": "./dist",
-		"baseUrl": "./"
-		// "paths": {
-		// 	"@/*": ["./src/*"]
-		// }
+		"baseUrl": "./",
+		"paths": {
+			"@/*": ["./src/*"]
+		}
 	},
 	"include": ["./api/*.ts", "src"],
 	"exclude": ["node_modules"]

@@ -1,9 +1,9 @@
-import { withAuth } from 'src/lib/middlewares/auth.middleware';
-import { validateSchema } from 'src/lib/middlewares/validate.middleware';
-import prisma from 'src/lib/prisma';
-import { memberSchema } from 'src/lib/schemas/member.schema';
-import { email } from 'src/lib/services/email.service';
-import { AddMember, EditMember, Member, SearchMembersParams } from 'src/lib/types/Member.types';
+import { withAuth } from '@/lib/middlewares/auth.middleware';
+import { validateSchema } from '@/lib/middlewares/validate.middleware';
+import prisma from '@/lib/prisma';
+import { memberSchema } from '@/lib/schemas/member.schema';
+import { email } from '@/lib/services/email.service';
+import { AddMember, EditMember, Member, SearchMembersParams } from '@/lib/types/Member.types';
 import { Prisma } from '@prisma/client';
 import express, { NextFunction, Request, Response } from 'express';
 

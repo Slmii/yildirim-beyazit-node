@@ -1,4 +1,4 @@
-import { IRequest } from 'src/lib/types/Request.types';
+import { IRequest } from '@/lib/types/Request.types';
 import { NextFunction, Response } from 'express';
 
 export const withAuth = async (req: IRequest, res: Response, next: NextFunction) => {
