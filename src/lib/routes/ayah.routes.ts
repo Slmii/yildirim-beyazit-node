@@ -1,6 +1,6 @@
 import { withAuth } from '@/lib/middlewares/auth.middleware';
 import prisma from '@/lib/prisma';
-import { Language, AddAyah } from '@/lib/types/Ayah.types';
+import { AddAyah, AyahLanguage } from '@/lib/types/Ayah.types';
 import express, { Request, Response } from 'express';
 
 const ayahRoutes = express.Router();
@@ -12,10 +12,10 @@ ayahRoutes.get('/', async (_req: Request, res: Response) => {
 });
 
 ayahRoutes.post('/', withAuth, async (req: Request<any, any, AddAyah[]>, res: Response) => {
-	const createManyData: (AddAyah & { language: Language })[] = [];
+	const createManyData: (AddAyah & { language: AyahLanguage })[] = [];
 
 	for (const { ayah, surah } of req.body) {
-		for (const language of Object.values(Language)) {
+		for (const language of Object.values(AyahLanguage)) {
 			createManyData.push({ ayah, surah, language });
 		}
 	}

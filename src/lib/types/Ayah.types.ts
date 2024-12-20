@@ -8,3 +8,9 @@ export enum Language {
 	NL = 'NL',
 	AR = 'AR'
 }
+
+export enum AyahLanguage {
+	NL = 'nl.siregar',
+	TR = 'tr.diyanet',
+	AR = 'quran-simple-enhanced'
+}
