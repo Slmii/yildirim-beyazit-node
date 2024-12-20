@@ -6,9 +6,7 @@ import express, { Request, Response } from 'express';
 const ayahRoutes = express.Router();
 
 ayahRoutes.get('/', async (_req: Request, res: Response) => {
-	const ayahs = await prisma.ayah.findMany({
-		distinct: ['surah']
-	});
+	const ayahs = await prisma.ayah.findMany();
 
 	res.status(200).json(ayahs);
 });
