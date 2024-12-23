@@ -1,6 +1,7 @@
 export interface AddAyah {
 	ayah: number;
 	surah: number;
+	completeSurah: boolean;
 }
 
 export enum Language {

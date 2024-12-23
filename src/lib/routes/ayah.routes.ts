@@ -13,7 +13,10 @@ ayahRoutes.get('/', async (_req: Request, res: Response) => {
 
 ayahRoutes.get('/admin', withAuth, async (_req: Request, res: Response) => {
 	const ayahs = await prisma.ayah.findMany({
-		distinct: ['surah']
+		distinct: ['surah'],
+		orderBy: {
+			createdAt: 'asc'
+		}
 	});
 
 	res.status(200).json(ayahs);
@@ -22,9 +25,9 @@ ayahRoutes.get('/admin', withAuth, async (_req: Request, res: Response) => {
 ayahRoutes.post('/', withAuth, async (req: Request<any, any, AddAyah[]>, res: Response) => {
 	const createManyData: (AddAyah & { language: AyahLanguage })[] = [];
 
-	for (const { ayah, surah } of req.body) {
+	for (const { ayah, surah, completeSurah } of req.body) {
 		for (const language of Object.values(AyahLanguage)) {
-			createManyData.push({ ayah, surah, language });
+			createManyData.push({ ayah, surah, language, completeSurah });
 		}
 	}
 
