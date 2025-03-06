@@ -28,6 +28,13 @@ interface PrayerTimeResponse {
 let prayerTimeCache: PrayerTimeResponse[] | null = null;
 let cacheExpiry: DateTime | null = null;
 
+prayerTimeRoutes.get('/', async (_req: Request, res: Response, _next: NextFunction) => {
+	const response = await fetch('https://ezanvakti.emushaf.net/vakitler/13880');
+	const data = (await response.json()) as PrayerTimeResponse[];
+
+	res.status(200).json({ data });
+});
+
 prayerTimeRoutes.get('/today', async (_req: Request, res: Response, _next: NextFunction) => {
 	const response = await fetch('https://ezanvakti.emushaf.net/vakitler/13880');
 	const data = (await response.json()) as PrayerTimeResponse[];
